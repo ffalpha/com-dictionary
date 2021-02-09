@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Input, Col } from "antd";
+import { Input, Col, Alert } from "antd";
 import { useHistory } from "react-router-dom";
 import SelectLang from "./SelectLang";
 import { toTitleCase } from "../../utils.js/toTitleCase";
@@ -9,9 +9,12 @@ const { Search } = Input;
 function SearchText(props) {
   const history = useHistory();
   const [language, setLanguage] = useState("English");
+  const [isSearchEmpty, setisSearchEmpty] = useState(false);
   // keyWord, handleSearch,
 
   const { setKeyWord } = props;
+
+  let bool = false;
   return (
     <>
       <Col xl={2} lg={2} md={2} sm={0} xs={0}>
@@ -26,12 +29,24 @@ function SearchText(props) {
           // width ="500px"
           required={true}
           size="large"
-          onSearch={(value) =>
-            history.push(`/search/${language}/${toTitleCase(value)}`)
-          }
+          onSearch={(value) => {
+            if (value) {
+              setisSearchEmpty(false);
+              history.push(`/search/${language}/${toTitleCase(value)}`);
+            } else {
+              setisSearchEmpty(true);
+            }
+          }}
           className="search_style"
           onChange={setKeyWord}
         />
+
+        {isSearchEmpty ? (
+          <Alert
+            message="Please enter a search term in the search box"
+            type="warning"
+          />
+        ) : null}
       </Col>
     </>
   );
